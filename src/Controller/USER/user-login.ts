@@ -3,6 +3,7 @@ import { z } from "zod";
 import { compareSync } from "bcrypt";
 import { returnError } from "../../Utils/response-error";
 import Config from "../../Config";
+import { createJWT } from "../../Utils/createJWT";
 
 const loginSchema = z.object({
 	email: z.string().email(),
@@ -35,15 +36,15 @@ export async function login(req: Request, res: Response) {
 			return res.status(401).json({ error: "Dados não batem." });
 		}
 
-		return res.status(404).json({
-			user: {
-				email: user.email,
-				name: user.name,
-				id: user.id,
-				picture: user.picture,
-				job: user.job,
-			},
-		});
+		const token = createJWT({ id: user.id, job: user.job });
+
+		const response = {
+			name: user.name,
+			picture: user.picture,
+			token,
+		};
+
+		return res.status(200).json(response);
 	} catch (error) {
 		returnError({ error, response: res });
 	}
