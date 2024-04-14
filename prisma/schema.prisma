@@ -1,0 +1,55 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum JOBS {
+  ADMIN
+  DEV
+  USER
+}
+
+model Permission {
+  id    String @id @default(auto()) @map("_id") @db.ObjectId
+  email String @unique
+  job   JOBS
+}
+
+model User {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  email    String @unique
+  password String
+  name     String
+  picture  String @default("https://i.ibb.co/GkyHvXz/picture.jpg")
+  job      JOBS
+
+  @@map("user")
+}
+
+model Party {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  condominum String
+  apt        String
+  start      DateTime
+  end        DateTime
+  guests     Guest[]
+}
+
+model Guest {
+  id      String    @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  party   Party     @relation(fields: [partyID], references: [id])
+  partyID String    @db.ObjectId
+  arrive  DateTime?
+  leave   DateTime?
+}
