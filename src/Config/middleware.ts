@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from "express";
-import { VerifyOptions, verify } from "jsonwebtoken";
+import {  verify } from "jsonwebtoken";
 import Config from ".";
 import { z } from "zod";
 import { returnError } from "../Utils/response-error";
