@@ -15,14 +15,14 @@ export async function create(req: Request, res: Response) {
 		const { id } = guestSchema.parse(req.params);
 		const { name } = guestDataSchema.parse(req.body);
 
-		await Config.DB.guest.create({
+		const guest = await Config.DB.guest.create({
 			data: {
 				name,
 				partyID: id,
 			},
 		});
 
-		return res.status(201).json({ message: "Criado com sucesso." });
+		return res.status(201).json(guest);
 	} catch (error) {
 		return returnError({ error, response: res });
 	}
